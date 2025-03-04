@@ -1,13 +1,65 @@
-body {
+@font-face {
+  font-family: "NotoSansRegular";
+  font-weight: 400;
+  src: url("./fonts/NotoSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "NotoSansBold";
+  font-weight: bold;
+  src: url("./fonts/NotoSans-Bold.ttf") format("truetype");
+}
+
+body, h1, h2, h3, h4, h5, h6, p, input {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'NotoSansRegular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+body, html {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  outline: none;
+}
+
+.grey-color {
+  color: #666
+}
+.txt-10 {
+  font-size: 10px;
+}
+.txt-14 {
+  font-size: 14px;
+}
+
+.display-mobile-only {
+  display: none !important;
+
+  @media screen and (max-width: 600px) {
+    display: block;
+  }
+}
+
+.display-desktop-only {
+  display: block;
+
+  @media screen and (max-width: 600px) {
+    display: none !important;
+  }
 }
