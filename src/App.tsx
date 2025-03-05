@@ -14,7 +14,7 @@ function App() {
   const [currentSearchWeatherResult, setCurrentSearchWeatherResult] = useState<OpenWeatherType>();
   const [searchHistory, setSearchHistory] = useState<SearchHistoryType[]>([]);
   const [checkSameCountryEntry, setCheckSameCountryEntry] = useState(false);
-  const [isInitialized, setIsInitialized] = useState<boolean>(true);
+  const [isInitialized, setIsInitialized] = useState<boolean>(true); //use to prevent first errormsg change causing rerender
 
   // Create a ref to access the country input field
   const countryInputRef = useRef<HTMLInputElement>(null);
