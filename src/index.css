@@ -52,7 +52,7 @@ button {
   display: none !important;
 
   @media screen and (max-width: 600px) {
-    display: block;
+    display: block !important;
   }
 }
 
