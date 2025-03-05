@@ -6,23 +6,37 @@ import deleteIcon from "./images/delete.png";
 import sunWeather from "./images/sun.png";
 import { OpenWeatherType } from "./models/types/open-weather-type";
 import { SearchHistoryType } from "./models/types/search-history-type";
+import { format } from 'date-fns';
 
 function App() {
   const [country, setCountry] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [currentSearchWeatherResult, setCurrentSearchWeatherResult] = useState<OpenWeatherType>();
   const [searchHistory, setSearchHistory] = useState<SearchHistoryType[]>([]);
+  const [checkSameCountryEntry, setCheckSameCountryEntry] = useState(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(true);
 
   // Create a ref to access the country input field
   const countryInputRef = useRef<HTMLInputElement>(null);
 
+  //check if key in value same as country value
+  const checkSameCountry = (countryInput: string) => {
+    if (country === countryInput) {
+      setCheckSameCountryEntry(!checkSameCountryEntry);
+    } else {
+      setCountry(countryInput);
+    }
+  }
+
+  //function to search country weather, change country state and triggered API called
   const searchCountryWeather = (contryInput?: string) => {
     if (contryInput) {
-      setCountry(contryInput);
+      checkSameCountry(contryInput);
     } else {
       if (countryInputRef.current) {
-        setCountry(countryInputRef.current.value); // Get input value and set country state
+        checkSameCountry(countryInputRef.current.value);// Get input value and set country state
       } else {
+        setErrorMsg("Please enter country name");
         setCountry(""); // if null set empty string
       }
     }
@@ -32,7 +46,11 @@ function App() {
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       // When Enter is pressed, set the country
-      setCountry(event.currentTarget.value);
+      if (event.currentTarget.value === "") {
+        setErrorMsg("Please enter country name");
+      } else {
+        checkSameCountry(event.currentTarget.value);
+      }
     }
   };
 
@@ -66,6 +84,9 @@ function App() {
           .then((data) => {
             if (data.cod !== 200) {
               setErrorMsg(data.message);
+              if (isInitialized) {
+                setIsInitialized(false);
+              }
             } else {
               //set current weather info to show in page
               setCurrentSearchWeatherResult({
@@ -76,7 +97,7 @@ function App() {
                 country: data.sys.country,
                 humidity: data.main.humidity,
                 weatherMain: data.weather[0].main,
-                searchTiming: new Date().toLocaleString()
+                searchTiming: format(new Date(), 'dd-MM-yyyy hh:mm:ss a')
               });
 
               //remove err message
@@ -86,19 +107,17 @@ function App() {
               const newSearchHistory: SearchHistoryType = {
                 name: data.name + ',' + data.sys.country,
                 searchedName: country,
-                searchTiming: new Date().toLocaleString()
+                searchTiming: format(new Date(), 'dd-MM-yyyy hh:mm:ss a')
               };
               handleSetSearchHistory(newSearchHistory);
             }
           });
-        setErrorMsg("");
       }
       catch (error) {
         console.log(error);
       }
     }
-  },[country])
-
+  },[country, checkSameCountryEntry]);
 
   return (
     <div className="forecast-weather-container">
@@ -134,7 +153,7 @@ function App() {
           )}
         </div>
         {
-          ((!errorMsg && country !== "") || searchHistory.length > 0) && (
+          ((!isInitialized && !errorMsg && country !== "") || searchHistory.length > 0) && (
             <div className="weather-info-container">
               <img
                 alt="weather-icon"
@@ -215,7 +234,6 @@ function App() {
             </div>
           )
         }
-          
       </div>
     </div>
   );
